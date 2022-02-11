@@ -8,7 +8,7 @@ let answerTime;
 
 function candidateExist(name) {
    for (let obj of candidatesData) {
-      if (name.toLowerCase() === obj.name.toLowerCase()) {
+      if (name.toLowerCase() === obj.candidateName.toLowerCase()) {
          return true;
       }
    }
