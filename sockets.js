@@ -85,16 +85,24 @@ function listen(io) {
                   score: 0,
                   room: data.clientRoom,
                });
+               quizNamespace.in(data.clientRoom).emit("candidate-joind", {
+                  candidatesData,
+                  error,
+               });
             } else {
                error = "this name is already taken !";
+               socket.emit("candidate-joind", {
+                  candidatesData,
+                  error,
+               });
             }
          } else {
-            error = "room not exist !";
+            error = "room not exist!";
+            socket.emit("candidate-joind", {
+               candidatesData,
+               error,
+            });
          }
-         quizNamespace.in(data.clientRoom).emit("candidate-joind", {
-            candidatesData,
-            error: error,
-         });
       });
 
       socket.on("start-quiz", ({ roomName }) => {
