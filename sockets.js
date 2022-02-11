@@ -6,6 +6,15 @@ let candidatesData = [];
 let Rooms = [];
 let answerTime;
 
+function candidateExist(name) {
+   for (let obj of candidatesData) {
+      if (name.toLowerCase() === obj.name.toLowerCase()) {
+         return true;
+      }
+   }
+   return false;
+}
+
 function getQuestions(room) {
    for (let obj of Rooms) {
       if (obj.room == room) {
@@ -66,21 +75,26 @@ function listen(io) {
       });
 
       socket.on("joind-room", (data) => {
+         var error = "";
          if (roomExist(data.clientRoom)) {
-            socket.join(data.clientRoom);
-            candidatesData.push({
-               id: socket.id,
-               candidateName: data.candidateName,
-               score: 0,
-               room: data.clientRoom,
-            });
-
-            quizNamespace.in(data.clientRoom).emit("candidate-joind", {
-               candidatesData,
-            });
+            if (!candidateExist(data.candidateName)) {
+               socket.join(data.clientRoom);
+               candidatesData.push({
+                  id: socket.id,
+                  candidateName: data.candidateName,
+                  score: 0,
+                  room: data.clientRoom,
+               });
+            } else {
+               error = "this name is already taken !";
+            }
          } else {
-            console.log("room not exist !");
+            error = "room not exist !";
          }
+         quizNamespace.in(data.clientRoom).emit("candidate-joind", {
+            candidatesData,
+            error: error,
+         });
       });
 
       socket.on("start-quiz", ({ roomName }) => {
