@@ -48,8 +48,8 @@ const socketServer = io(httpServer, {
 
 const sockets = require("./sockets");
 
-const PORT = 5000;
-httpServer.listen(PORT);
-console.log(`Listening on port ${PORT}...`);
+httpServer.listen(process.env.PORT || 5000, () => {
+   console.log(`app is running on port ${process.env.PORT}`);
+});
 
 sockets.listen(socketServer);
